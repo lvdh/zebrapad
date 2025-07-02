@@ -6,8 +6,6 @@ sources:
   - https://git.sr.ht/~gfy/zebrapad
 tasks:
   - test: |
-      cd zebrapad/
-      make test
+      make test -C zebrapad/
   - build: |
-      cd zebrapad/
-      make build
+      make build -C zebrapad/
