@@ -1,19 +1,21 @@
-BIN=bin/zebrapad
+BIN=zebrapad
 
-.PHONY: all build test run clean
+.PHONY: all clean test build run
 
 all: clean test build run
 
-$(BIN): build
-build: src/*.go src/web/*
-	mkdir -p bin
-	cd src && go build -o ../$(BIN) .
-
-test:
-	cd src && go test .
-
-run: $(BIN)
-	./$(BIN)
+go.mod:
+	go mod init github.com/lvdh/zebrapad
 
 clean:
-	rm -rf bin/
+	rm -rf ./$(BIN)
+
+test: go.mod
+	go test ./...
+
+$(BIN): build
+build: go.mod cmd/zebrapad/*.go internal/*
+	go build -o ./$(BIN) ./cmd/zebrapad/*.go
+
+run: go.mod $(BIN)
+	./$(BIN)

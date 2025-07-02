@@ -1,3 +1,5 @@
+[![builds.sr.ht status](https://builds.sr.ht/~gfy/zebrapad.svg?branch=main)](https://builds.sr.ht/~gfy/zebrapad?) ![GitHub Actions - main](https://github.com/lvdh/zebrapad/actions/workflows/main.yml/badge.svg?branch=main)
+
 # zebrapad
 
 Label printing tool for ZPL-based label printers.
