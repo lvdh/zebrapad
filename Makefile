@@ -13,7 +13,7 @@ test:
 	cd src && go test .
 
 run: $(BIN)
-	./bin/$(BIN)
+	./$(BIN)
 
 clean:
 	rm -rf bin/
