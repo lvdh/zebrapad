@@ -1,11 +1,8 @@
 BIN=bin/zebrapad
 
-.PHONY: all setup build test run clean
+.PHONY: all build test run clean
 
 all: test $(BIN)
-
-setup:
-	cd src && go get github.com/gin-gonic/gin
 
 build: $(BIN)
 $(BIN): src/*.go src/web/*

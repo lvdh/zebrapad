@@ -5,9 +5,9 @@ packages:
 sources:
   - https://git.sr.ht/~gfy/zebrapad
 tasks:
-  - setup: |
-      make setup
   - test: |
+      cd zebrapad/
       make test
   - build: |
+      cd zebrapad/
       make build
