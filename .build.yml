@@ -1,0 +1,11 @@
+image: alpine/latest
+packages:
+  - go
+  - make
+sources:
+  - https://git.sr.ht/~gfy/zebrapad
+tasks:
+  - test: |
+      make test -C zebrapad/
+  - build: |
+      make build -C zebrapad/
