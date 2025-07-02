@@ -1,0 +1,22 @@
+name: main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+      - name: test
+        run: make test -C zebrapad/
+      - name: build
+        run: make build -C zebrapad/
