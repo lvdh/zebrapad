@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-var PrinterAddress = "192.168.1.100:9100" // TODO: make configurable
+var PrinterAddress = "127.0.0.1:9100" // TODO: make configurable
 
 func SendZPLToPrinter(zpl string) error {
 	conn, err := net.Dial("tcp", PrinterAddress)
