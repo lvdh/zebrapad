@@ -50,18 +50,5 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"status": "sent"})
 	})
 
-	r.GET("/debug", func(c *gin.Context) {
-		files, err := fs.ReadDir(webFS, ".")
-		if err != nil {
-			c.String(500, "error: %v", err)
-			return
-		}
-		var list string
-		for _, f := range files {
-			list += f.Name() + "\n"
-		}
-		c.String(200, list)
-	})
-
 	r.Run(":8080")
 }
