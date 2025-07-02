@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"io/fs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,12 +14,18 @@ var webAssets embed.FS
 func main() {
 	r := gin.Default()
 
+	// chroot the embedded FS to the web/ directory
+	webFS, err := fs.Sub(webAssets, "web")
+	if err != nil {
+		panic(err)
+	}
+
 	// serve static files from /static/
-	r.StaticFS("/static", http.FS(webAssets))
+	r.StaticFS("/static", http.FS(webFS))
 
 	// serve index.html at root
 	r.GET("/", func(c *gin.Context) {
-		f, err := webAssets.Open("web/index.html")
+		f, err := webFS.Open("index.html")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "index.html not found")
 			return
@@ -44,7 +51,7 @@ func main() {
 	})
 
 	r.GET("/debug", func(c *gin.Context) {
-		files, err := webAssets.ReadDir("web")
+		files, err := fs.ReadDir(webFS, ".")
 		if err != nil {
 			c.String(500, "error: %v", err)
 			return
