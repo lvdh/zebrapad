@@ -2,10 +2,10 @@ BIN=bin/zebrapad
 
 .PHONY: all build test run clean
 
-all: test $(BIN)
+all: clean test build run
 
-build: $(BIN)
-$(BIN): src/*.go src/web/*
+$(BIN): build
+build: src/*.go src/web/*
 	mkdir -p bin
 	cd src && go build -o ../$(BIN) .
 

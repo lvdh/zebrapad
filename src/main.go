@@ -13,13 +13,18 @@ var webAssets embed.FS
 func main() {
 	r := gin.Default()
 
-	// Serve embedded static files
+	// serve static files from /static/
 	r.StaticFS("/static", http.FS(webAssets))
 
-	r.LoadHTMLFiles("../web/index.html")
-
+	// serve index.html at root
 	r.GET("/", func(c *gin.Context) {
-		c.FileFromFS("web/index.html", http.FS(webAssets))
+		f, err := webAssets.Open("web/index.html")
+		if err != nil {
+			c.String(http.StatusInternalServerError, "index.html not found")
+			return
+		}
+		defer f.Close()
+		c.DataFromReader(http.StatusOK, -1, "text/html", f, nil)
 	})
 
 	r.POST("/print", func(c *gin.Context) {
@@ -27,7 +32,7 @@ func main() {
 			ZPL string `form:"zpl" json:"zpl" binding:"required"`
 		}
 		if err := c.ShouldBind(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing ZPL input"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "missing ZPL input"})
 			return
 		}
 		err := SendZPLToPrinter(req.ZPL)
