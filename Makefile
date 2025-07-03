@@ -11,7 +11,7 @@ clean:
 	rm -rf ./$(BIN)
 
 test: go.mod
-	go test ./...
+	go test -v ./...
 
 $(BIN): build
 build: go.mod cmd/zebrapad/*.go internal/*
