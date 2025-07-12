@@ -6,41 +6,50 @@ import (
 	"time"
 )
 
-func TestSendZPLToPrinter(t *testing.T) {
-	// Start a mock TCP server
-	ln, err := net.Listen("tcp", "127.0.0.1:19100")
+func startFakePrinter(t *testing.T, received chan<- []byte) (addr string, stop func()) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
-		t.Fatalf("failed to start mock server: %v", err)
+		t.Fatalf("failed to start fake printer: %v", err)
 	}
-	defer ln.Close()
-
-	PrinterAddress = "127.0.0.1:19100"
-
 	go func() {
 		conn, err := ln.Accept()
 		if err != nil {
-			t.Errorf("mock server accept error: %v", err)
 			return
 		}
 		defer conn.Close()
 		buf := make([]byte, 1024)
-		n, err := conn.Read(buf)
-		if err != nil {
-			t.Errorf("mock server read error: %v", err)
-			return
-		}
-		got := string(buf[:n])
-		want := "^XA^FO50,50^ADN,36,20^FDTest Label^FS^XZ"
-		if got != want {
-			t.Errorf("expected %q, got %q", want, got)
-		}
+		n, _ := conn.Read(buf)
+		received <- buf[:n]
 	}()
+	return ln.Addr().String(), func() { ln.Close() }
+}
 
-	// Give the goroutine a moment to start
-	time.Sleep(100 * time.Millisecond)
+func TestTCPPrinter_Print_Success(t *testing.T) {
+	received := make(chan []byte, 1)
+	addr, stop := startFakePrinter(t, received)
+	defer stop()
 
-	err = SendZPLToPrinter("^XA^FO50,50^ADN,36,20^FDTest Label^FS^XZ")
+	p := &TCPPrinter{Network: "tcp", Address: addr}
+	data := []byte("test label")
+	err := p.Print(data)
 	if err != nil {
-		t.Fatalf("SendZPLToPrinter failed: %v", err)
+		t.Fatalf("Print failed: %v", err)
+	}
+
+	select {
+	case got := <-received:
+		if string(got) != string(data) {
+			t.Errorf("expected %q, got %q", data, got)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("timeout waiting for printer data")
+	}
+}
+
+func TestTCPPrinter_Print_ConnectionError(t *testing.T) {
+	p := &TCPPrinter{Network: "tcp", Address: "127.0.0.1:65000"} // unused port
+	err := p.Print([]byte("fail"))
+	if err == nil {
+		t.Fatal("expected error, got nil")
 	}
 }
