@@ -23,7 +23,7 @@ docs: update README with setup instructions
 
 - Write tests for new features and bugfixes.
 - Go code should be formatted with `gofmt`.
-- Keep backend code in `src/` and frontend/static files in `web/`.
+- Keep backend code in `src/` and frontend assets in `web/`.
 
 ## Pull Requests
 

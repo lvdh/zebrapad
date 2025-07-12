@@ -16,19 +16,19 @@ func NewHTTPServer(p printer.Printer) *gin.Engine {
 	r := gin.Default()
 
 	// chroot the web/* assets
-	webFS, err := fs.Sub(webAssets, "web")
+	webAssetsFS, err := fs.Sub(webAssets, "web")
 	if err != nil {
 		panic(err)
 	}
 
-	// GET /static
+	// GET /assets
 	//   serves web/*
-	r.StaticFS("/static", http.FS(webFS))
+	r.StaticFS("/assets", http.FS(webAssetsFS))
 
 	// GET /
 	//   serves index.html
 	r.GET("/", func(c *gin.Context) {
-		f, err := webFS.Open("index.html")
+		f, err := webAssetsFS.Open("index.html")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "index.html not found") // HTTP 500
 			return
