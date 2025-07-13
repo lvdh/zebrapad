@@ -70,6 +70,12 @@ func NewHTTPServer(p printer.Printer) *gin.Engine {
 			return
 		}
 		// TODO: implement reder call
+		p := printer.NewLabelaryPrinter()
+		err = p.Print([]byte(req.Data))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // HTTP 500
+			return
+		}
 		c.JSON(http.StatusOK, gin.H{"status": "sent"}) // HTTP 200
 	})
 
