@@ -1,3 +1,4 @@
+/*
 const cardPreviewBtn = document.getElementById("card-preview");
 const zplPreviewBtn = document.getElementById("zpl-preview");
 
@@ -10,13 +11,13 @@ async function requestLabel(zplString, outputElement) {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(zplString),
-    }
+    },
   );
 
   console.log(response);
 
-  const responseBlob = await response.blob(); 
-  const img = document.createElement('img');
+  const responseBlob = await response.blob();
+  const img = document.createElement("img");
   img.src = URL.createObjectURL(responseBlob);
   document.getElementById(outputElement).append(img);
 }
@@ -69,3 +70,4 @@ const test = `^XA
             ^FO470,955^FDCA^FS
 
             ^XZ`;
+*/
