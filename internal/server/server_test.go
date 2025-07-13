@@ -21,7 +21,7 @@ func (m *mockPrinter) Print(data []byte) error {
 	return m.err
 }
 
-func setupRouter(p printer.Printer) *gin.Engine {
+func setupRouter(p printer.TCPPrinter) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	return NewHTTPServer(p)
 }

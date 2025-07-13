@@ -12,7 +12,7 @@ import (
 //go:embed web/*
 var webAssets embed.FS
 
-func NewHTTPServer(p printer.Printer) *gin.Engine {
+func NewHTTPServer(p *printer.TCPPrinter) *gin.Engine {
 	r := gin.Default()
 
 	// prepare /assets/*
@@ -60,23 +60,23 @@ func NewHTTPServer(p printer.Printer) *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"status": "sent"}) // HTTP 200
 	})
 
-	r.POST("/preview", func(c *gin.Context) {
-		var req struct {
-			Data string `form:"zpl" json:"zpl" binding:"required"`
-		}
-		err := c.ShouldBind(&req)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "missing data input"}) // HTTP 400
-			return
-		}
-		p := printer.NewLabelaryPrinter()
-		err = p.Print([]byte(req.Data))
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // HTTP 500
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"status": "sent"}) // HTTP 200
-	})
+	//r.POST("/preview", func(c *gin.Context) {
+	//	var req struct {
+	//		Data string `form:"zpl" json:"zpl" binding:"required"`
+	//	}
+	//	err := c.ShouldBind(&req)
+	//	if err != nil {
+	//		c.JSON(http.StatusBadRequest, gin.H{"error": "missing data input"}) // HTTP 400
+	//		return
+	//	}
+	//	p := printer.NewLabelaryPrinter()
+	//	resp, err := p.Print([]byte(req.Data))
+	//	if err != nil {
+	//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // HTTP 500
+	//		return
+	//	}
+	//	c.JSON(http.StatusOK, gin.H{"status": "sent"}) // HTTP 200
+	//})
 
 	return r
 	// r.Run(":8080")

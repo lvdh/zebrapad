@@ -1,13 +1,32 @@
 package printer
 
 import (
+	"net"
 	"testing"
 	"time"
 )
 
+func startFakeTCPPrinter(t *testing.T, received chan<- []byte) (addr string, stop func()) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("failed to start fake printer: %v", err)
+	}
+	go func() {
+		conn, err := ln.Accept()
+		if err != nil {
+			return
+		}
+		defer conn.Close()
+		buf := make([]byte, 1024)
+		n, _ := conn.Read(buf)
+		received <- buf[:n]
+	}()
+	return ln.Addr().String(), func() { ln.Close() }
+}
+
 func TestTCPPrinter_Print_Success(t *testing.T) {
 	received := make(chan []byte, 1)
-	addr, stop := startFakePrinter(t, received)
+	addr, stop := startFakeTCPPrinter(t, received)
 	defer stop()
 
 	p := &TCPPrinter{Network: "tcp", Address: addr}
