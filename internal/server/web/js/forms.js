@@ -25,14 +25,14 @@ document
     resultDiv.classList.remove("is-hidden");
   });
 document
-  .getElementById("card-render")
+  .getElementById("card-preview")
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const cardFullname = document.getElementById("card-fullname").value;
     const cardBarcode = document.getElementById("card-barcode").value;
     const zpl =
       "^XA^FO50,50^ADN,36,20^FD" + cardFullname + cardBarcode + "^FS^XZ";
-    const res = await fetch("/render", {
+    const res = await fetch("/preview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ zpl }),
@@ -72,11 +72,11 @@ document
     resultDiv.classList.remove("is-hidden");
   });
 document
-  .getElementById("zpl-render")
+  .getElementById("zpl-preview")
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const zpl = document.getElementById("zpl-input").value;
-    const res = await fetch("/render", {
+    const res = await fetch("/preview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ zpl }),

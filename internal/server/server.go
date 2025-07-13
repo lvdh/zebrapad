@@ -60,7 +60,7 @@ func NewHTTPServer(p printer.Printer) *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"status": "sent"}) // HTTP 200
 	})
 
-	r.POST("/render", func(c *gin.Context) {
+	r.POST("/preview", func(c *gin.Context) {
 		var req struct {
 			Data string `form:"zpl" json:"zpl" binding:"required"`
 		}
@@ -69,7 +69,6 @@ func NewHTTPServer(p printer.Printer) *gin.Engine {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "missing data input"}) // HTTP 400
 			return
 		}
-		// TODO: implement reder call
 		p := printer.NewLabelaryPrinter()
 		err = p.Print([]byte(req.Data))
 		if err != nil {
