@@ -15,13 +15,13 @@ var webAssets embed.FS
 func NewHTTPServer(p printer.Printer) *gin.Engine {
 	r := gin.Default()
 
-	// chroot the web/* assets
+	// prepare /assets/*
+	//   chroots the web/* assets
 	webAssetsFS, err := fs.Sub(webAssets, "web")
 	if err != nil {
 		panic(err)
 	}
-
-	// GET /assets
+	// GET /assets/*
 	//   serves web/*
 	r.StaticFS("/assets", http.FS(webAssetsFS))
 
