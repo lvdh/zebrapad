@@ -13,7 +13,7 @@ import (
 //go:embed web/*
 var webAssets embed.FS
 
-func NewHTTPServer(p *printer.Printer) http.Handler {
+func NewHTTPServer(p printer.Printer) http.Handler {
 	mux := http.NewServeMux()
 
 	// prepare /assets/* -- chroots web/*
