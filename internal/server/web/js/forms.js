@@ -10,7 +10,6 @@ async function requestLabel(zpl) {
       body: JSON.stringify(zpl),
     },
   );
-  console.log(response);
   return response;
 }
 
@@ -70,9 +69,9 @@ document
     img.src = URL.createObjectURL(responseBlob);
     img.id = "card-label";
     const outputDiv = document.getElementById("card-output");
-    while(outputDiv.firstChild) {
-        // remove previous labels, if any
-        outputDiv.removeChild(outputDiv.firstChild);
+    while (outputDiv.firstChild) {
+      // remove previous labels, if any
+      outputDiv.removeChild(outputDiv.firstChild);
     }
     outputDiv.append(img);
     outputDiv.classList.remove("is-hidden");
