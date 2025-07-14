@@ -22,8 +22,8 @@ func NewTCPPrinter(address string) *TCPPrinter {
 	return p
 }
 
-func (p TCPPrinter) Print(data []byte) error {
-	conn, err := net.Dial(p.Network, p.Address)
+func (t *TCPPrinter) Print(data []byte) error {
+	conn, err := net.Dial(t.Network, t.Address)
 	if err != nil {
 		return fmt.Errorf("failed to connect to printer: %w", err)
 	}
