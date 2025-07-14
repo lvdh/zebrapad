@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	p := *printer.NewTCPPrinter(":9100")
+	p := printer.NewTCPPrinter(":9100")
 	s := server.NewHTTPServer(p)
 	http.ListenAndServe(":8080", s)
 }
