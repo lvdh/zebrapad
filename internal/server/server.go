@@ -2,18 +2,19 @@ package server
 
 import (
 	"embed"
+	"encoding/json"
+	"io"
 	"io/fs"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/lvdh/zebrapad/internal/printer"
 )
 
 //go:embed web/*
 var webAssets embed.FS
 
-func NewHTTPServer(p *printer.TCPPrinter) *gin.Engine {
-	r := gin.Default()
+func NewHTTPServer(p *printer.Printer) http.Handler {
+	mux := http.NewServeMux()
 
 	// prepare /assets/* -- chroots web/*
 	webAssetsFS, err := fs.Sub(webAssets, "web")
@@ -21,17 +22,22 @@ func NewHTTPServer(p *printer.TCPPrinter) *gin.Engine {
 		panic(err)
 	}
 	// GET /assets/* -- serves web/*
-	r.StaticFS("/assets", http.FS(webAssetsFS))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.FS(webAssetsFS))))
 
 	// GET / -- serves index.html
-	r.GET("/", func(c *gin.Context) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
 		f, err := webAssetsFS.Open("index.html")
 		if err != nil {
-			c.String(http.StatusInternalServerError, "index.html not found") // HTTP 500
+			http.Error(w, "index.html not found", http.StatusInternalServerError)
 			return
 		}
 		defer f.Close()
-		c.DataFromReader(http.StatusOK, -1, "text/html", f, nil) // HTTP 200
+		w.Header().Set("Content-Type", "text/html")
+		io.Copy(w, f)
 	})
 
 	// POST /print -- sends raw ZPL to the label printer, example request:
@@ -39,23 +45,29 @@ func NewHTTPServer(p *printer.TCPPrinter) *gin.Engine {
 	//     -X POST \
 	//     -H 'Content-Type: application/json' \
 	//     --data-raw '{"zpl":"^XA^FO50,50^ADN,36,20^FDTest Label^FS^XZ"}'
-	r.POST("/print", func(c *gin.Context) {
-		var req struct {
-			Data string `form:"zpl" json:"zpl" binding:"required"`
+	mux.HandleFunc("/print", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
 		}
-		err := c.ShouldBind(&req)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "missing data input"}) // HTTP 400
+		var req struct {
+			Data string `json:"zpl"`
+		}
+		dec := json.NewDecoder(r.Body)
+		err := dec.Decode(&req)
+		if err != nil || req.Data == "" {
+			http.Error(w, `{"error":"missing data input"}`, http.StatusBadRequest)
 			return
 		}
 		err = p.Print([]byte(req.Data))
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()}) // HTTP 500
+			http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"status": "sent"}) // HTTP 200
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status":"sent"}`))
 	})
 
-	return r
-	// r.Run(":8080")
+	return mux
+	// http.ListenAndServe(":8080", mux)
 }

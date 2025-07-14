@@ -5,6 +5,10 @@ import (
 	"net"
 )
 
+type Printer interface {
+	Print(data []byte) error
+}
+
 type TCPPrinter struct {
 	Network string
 	Address string // "[host]:port"
