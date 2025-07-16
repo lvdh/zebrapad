@@ -15,15 +15,15 @@ const zplTemplate = `^XA
 ^A0,,30,0
 ^FDBill the Lizard^FS
 
-^FXASSUMPTIONS:^FS
-^FX  LABEL:      Zebra 800272-075^FS
-^FX  PRINTER:    Zebra GK420t^FS
-^FX  DENSITY:    8 DPMM^FS
-^FXLABEL:^FS
-^FX  RESOLUTION: 457.2 DOTS x 152.4 DOTS^FS
-^FXBARCODE:^FS
-^FX  WIDTH: 297 DOTS = (9x normal char)*(11 dots per normal char)*(3 for BY)^FS
-^FX  SIDES: 80 DOTS = (457.2-297)/2 ROUNDED^FS
+^FX  ASSUMPTIONS:^FS
+^FX    LABEL:      Zebra 800272-075^FS
+^FX    PRINTER:    Zebra GK420t^FS
+^FX    DENSITY:    8 DPMM^FS
+^FX  LABEL:^FS
+^FX    RESOLUTION: 457.2 DOTS x 152.4 DOTS^FS
+^FX  BARCODE:^FS
+^FX    WIDTH: 297 DOTS = (9x normal char)*(11 dots per normal char)*(3 for BY)^FS
+^FX    SIDES: 80 DOTS = (457.2-297)/2 ROUNDED^FS
 
 ^XZ`;
 
