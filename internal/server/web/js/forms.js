@@ -1,8 +1,38 @@
 // js/forms.js
 
+// globals
+const zplTemplate = `^XA
+
+^FXBARCODE:^FS
+^FO75,10
+^BY3
+^BCN,70,,,,A
+^FD999999999^FS
+
+^FXFULL NAME:^FS
+^FO0,120
+^FB457,,,C,
+^A0,,30,0
+^FDBill the Lizard^FS
+
+^FXASSUMPTIONS:^FS
+^FX  LABEL:      Zebra 800272-075^FS
+^FX  PRINTER:    Zebra GK420t^FS
+^FX  DENSITY:    8 DPMM^FS
+^FXLABEL:^FS
+^FX  RESOLUTION: 457.2 DOTS x 152.4 DOTS^FS
+^FXBARCODE:^FS
+^FX  WIDTH: 297 DOTS = (9x normal char)*(11 dots per normal char)*(3 for BY)^FS
+^FX  SIDES: 80 DOTS = (457.2-297)/2 ROUNDED^FS
+
+^XZ`;
+
 // functions
 async function requestPreview(zpl) {
   const res = await fetch(
+    // NOTE: label type is fixed, Zebra 800272-075:
+    //   size in metric: 57.15mm x 19.05mm
+    //   size in freedom units: 2.25" x 0.75"
     "http://api.labelary.com/v1/printers/8dpmm/labels/2.25x0.75/0/",
     {
       method: "POST",
@@ -19,6 +49,9 @@ async function displayPreview(res, outputElId) {
   const resBlob = await res.blob();
   const img = document.createElement("img");
   img.src = URL.createObjectURL(resBlob);
+  img.style.backgroundColor = "#000";
+  img.style.padding = "1px";
+  img.style.borderRadius = "20px";
   const outputDiv = document.getElementById(outputElId);
   while (outputDiv.firstChild) {
     // remove previous labels, if any
@@ -69,10 +102,10 @@ document
   .getElementById("card-print")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const cardFullname = document.getElementById("card-fullname").value;
+    const cardFullName = document.getElementById("card-fullname").value;
     const cardBarcode = document.getElementById("card-barcode").value;
     const zpl =
-      "^XA^FO50,50^ADN,36,20^FD" + cardFullname + cardBarcode + "^FS^XZ";
+      "^XA^FO50,50^ADN,36,20^FD" + cardFullName + cardBarcode + "^FS^XZ";
     const res = await printLabel(zpl);
     await displayPrintNotification(res, "card-result");
   });
@@ -80,10 +113,9 @@ document
   .getElementById("card-preview")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const cardFullname = document.getElementById("card-fullname").value;
+    const cardFullName = document.getElementById("card-fullname").value;
     const cardBarcode = document.getElementById("card-barcode").value;
-    const zpl =
-      "^XA^FO50,50^ADN,36,20^FD" + cardFullname + cardBarcode + "^FS^XZ";
+    const zpl = zplTemplate;
     const res = await requestPreview(zpl);
     await displayPreviewNotification(res, "card-result");
     await displayPreview(res, "card-output");

@@ -58,7 +58,7 @@
                 <div id="card-result" class="notification is-hidden"></div>
             </div>
             <div class="column">
-                <div id="card-output" class="box is-hidden" style="margin-top: 1em; border-radius: 40px;"></div>
+                <div id="card-output" class="box is-hidden has-background-warning-light" style="margin-top: 1em;"></div>
             </div>
         </div>
       </div>
@@ -75,7 +75,31 @@
             <form id="zpl-form">
               <div class="field">
                 <div class="control">
-                  <textarea class="textarea" id="zpl-input" rows="10">^XA^FO50,50^ADN,36,20^FDTest Label^FS^XZ</textarea>
+                  <textarea class="textarea" id="zpl-input" rows="10">^XA
+
+^FXBARCODE:^FS
+^FO75,10
+^BY3
+^BCN,70,,,,A
+^FD999999999^FS
+
+^FXFULL NAME:^FS
+^FO0,120
+^FB457,,,C,
+^A0,,30,0
+^FDBill the Lizard^FS
+
+^FXASSUMPTIONS:^FS
+^FX  LABEL:      Zebra 800272-075^FS
+^FX  PRINTER:    Zebra GK420t^FS
+^FX  DENSITY:    8 DPMM^FS
+^FXLABEL:^FS
+^FX  RESOLUTION: 457.2 DOTS x 152.4 DOTS^FS
+^FXBARCODE:^FS
+^FX  WIDTH: 297 DOTS = (9x normal char)*(11 dots per normal char)*(3 for BY)^FS
+^FX  SIDES: 80 DOTS = (457.2-297)/2 ROUNDED^FS
+
+^XZ</textarea>
                 </div>
               </div>
               <div class="field m-4">
@@ -94,7 +118,7 @@
             <div id="zpl-result" class="notification is-hidden"></div>
           </div>
           <div class="column">
-            <div id="zpl-output" class="box is-hidden" style="margin-top: 1em;"></div>
+            <div id="zpl-output" class="box is-hidden has-background-warning-light" style="margin-top: 1em;"></div>
             <div class="content">
               <h3>Documentation</h3>
               <ul>
