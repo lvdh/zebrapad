@@ -3,27 +3,31 @@
 // globals
 const zplTemplate = `^XA
 
-^FXBARCODE:^FS
-^FO75,10
+^FX-- BARCODE:^FS
+^FX--   NOTE: MUST BE 9 DIGITS (FIXED POSITION)^FS
+^FO80,10
 ^BY3
 ^BCN,70,,,,A
 ^FD999999999^FS
 
-^FXFULL NAME:^FS
+^FX-- FULL NAME:^FS
+^FX--   NOTE: MAX. 30 CHARS^FS
 ^FO0,120
 ^FB457,,,C,
-^A0,,30,0
-^FDBill the Lizard^FS
+^A0,,30,
+^FDBill the Lizard\&^FS
 
-^FX  ASSUMPTIONS:^FS
-^FX    LABEL:      Zebra 800272-075^FS
-^FX    PRINTER:    Zebra GK420t^FS
-^FX    DENSITY:    8 DPMM^FS
-^FX  LABEL:^FS
-^FX    RESOLUTION: 457.2 DOTS x 152.4 DOTS^FS
-^FX  BARCODE:^FS
-^FX    WIDTH: 297 DOTS = (9x normal char)*(11 dots per normal char)*(3 for BY)^FS
-^FX    SIDES: 80 DOTS = (457.2-297)/2 ROUNDED^FS
+^FX-- ASSUMED CONFIG:^FS
+^FX--   LABEL:       Zebra 800272-075^FS
+^FX--   PRINTER:     Zebra GK420t^FS
+^FX--   DENSITY:     8 DPMM^FS
+^FX-- LABEL:^FS
+^FX--   RESOLUTION:  457.2 DOTS x 152.4 DOTS^FS
+^FX-- BARCODE:^FS
+^FX--   WIDTH:       297 DOTS^FS
+^FX--     CALC:      (9x digit)*(11 dots/digit)*(BY=3)^FS
+^FX--   SIDES:       80 DOTS^FS
+^FX--     CALC:      ROUND((457.2-297)/2)^FS
 
 ^XZ`;
 
@@ -33,13 +37,14 @@ async function requestPreview(zpl) {
     // NOTE: label type is fixed, Zebra 800272-075:
     //   size in metric: 57.15mm x 19.05mm
     //   size in freedom units: 2.25" x 0.75"
+    // NOTE: .replace() works around escape shenanigans
     "http://api.labelary.com/v1/printers/8dpmm/labels/2.25x0.75/0/",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify(zpl),
+      body: JSON.stringify(zpl).replace("\\&", "\&"),
     },
   );
   return res;
