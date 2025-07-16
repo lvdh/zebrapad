@@ -3,7 +3,7 @@
 // functions
 async function requestPreview(zpl) {
   const res = await fetch(
-    `http://api.labelary.com/v1/printers/8dpmm/labels/2.25x0.75/0/`,
+    "http://api.labelary.com/v1/printers/8dpmm/labels/2.25x0.75/0/",
     {
       method: "POST",
       headers: {
