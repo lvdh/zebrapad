@@ -104,7 +104,9 @@ async function displayPrintNotification(res, resultElId) {
   resultDiv.classList.remove("is-hidden");
 }
 
-function validateCardForm(cardFullName, cardBarcode) {
+function validateCardForm() {
+  const cardBarcode = document.getElementById("card-barcode").value;
+  const cardFullName = document.getElementById("card-fullname").value;
   const cardFullNameMsg = document.getElementById("card-fullname-msg");
   const cardBarcodeMsg = document.getElementById("card-barcode-msg");
   cardFullNameMsg.textContent = "";
@@ -119,16 +121,22 @@ function validateCardForm(cardFullName, cardBarcode) {
     cardBarcodeMsg.textContent = msg;
     throw new Error(msg);
   }
+  return {
+    cardFullName: cardFullName,
+    cardBarcode: cardBarcode,
+  };
 }
 
-function validateZplForm(zpl) {
-  const zplInputMsg = document.getElementById("zpl-input-msg");
+function validateZplForm() {
+  const zpl = document.getElementById("zpl-input").value;
+  zplInputMsg = document.getElementById("zpl-input-msg");
   zplInputMsg.textContent = "";
   if (!zpl.trim().startsWith("^XA") || !zpl.trim().endsWith("^XZ")) {
     let msg = "Please provide valid ZPL. See documentation to the right.";
     zplInputMsg.textContent = msg;
     throw new Error(msg);
   }
+  return zpl;
 }
 
 // submit listeners for form 'Card'
@@ -136,12 +144,10 @@ document
   .getElementById("card-print")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const cardBarcode = document.getElementById("card-barcode").value;
-    const cardFullName = document.getElementById("card-fullname").value;
-    validateCardForm(cardFullName, cardBarcode);
+    const formData = validateCardForm();
     const zpl = zplTemplate
-      .replace("999999999", cardBarcode)
-      .replace("Bill the Lizard", cardFullName);
+      .replace("999999999", formData.cardBarcode)
+      .replace("Bill the Lizard", formData.cardFullName);
     const res = await printLabel(zpl);
     await displayPrintNotification(res, "card-result");
   });
@@ -149,12 +155,10 @@ document
   .getElementById("card-preview")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const cardFullName = document.getElementById("card-fullname").value;
-    const cardBarcode = document.getElementById("card-barcode").value;
-    validateCardForm(cardFullName, cardBarcode);
+    const formData = validateCardForm();
     const zpl = zplTemplate
-      .replace("999999999", cardBarcode)
-      .replace("Bill the Lizard", cardFullName);
+      .replace("999999999", formData.cardBarcode)
+      .replace("Bill the Lizard", formData.cardFullName);
     const res = await requestPreview(zpl);
     await displayPreviewNotification(res, "card-result");
     await displayPreview(res, "card-output");
@@ -165,8 +169,7 @@ document
   .getElementById("zpl-print")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const zpl = document.getElementById("zpl-input").value;
-    validateZplForm(zpl);
+    const zpl = validateZplForm();
     const res = await printLabel(zpl);
     displayPrintNotification(res, "zpl-result");
   });
@@ -174,8 +177,7 @@ document
   .getElementById("zpl-preview")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const zpl = document.getElementById("zpl-input").value;
-    validateZplForm(zpl);
+    const zpl = validateZplForm();
     const res = await requestPreview(zpl);
     await displayPreviewNotification(res, "zpl-result");
     await displayPreview(res, "zpl-output");
