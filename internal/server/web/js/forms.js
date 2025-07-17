@@ -139,15 +139,19 @@ function validateZplForm() {
   return zpl;
 }
 
-// submit listeners for form 'Card'
+function renderZplTemplate(formData) {
+  return zplTemplate
+    .replace("999999999", formData.cardBarcode)
+    .replace("Bill the Lizard", formData.cardFullName);
+}
+
+// submit listeners
 document
   .getElementById("card-print")
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const formData = validateCardForm();
-    const zpl = zplTemplate
-      .replace("999999999", formData.cardBarcode)
-      .replace("Bill the Lizard", formData.cardFullName);
+    const zpl = renderZplTemplate(formData);
     const res = await printLabel(zpl);
     await displayPrintNotification(res, "card-result");
   });
@@ -156,22 +160,18 @@ document
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const formData = validateCardForm();
-    const zpl = zplTemplate
-      .replace("999999999", formData.cardBarcode)
-      .replace("Bill the Lizard", formData.cardFullName);
+    const zpl = renderZplTemplate(formData);
     const res = await requestPreview(zpl);
     await displayPreviewNotification(res, "card-result");
     await displayPreview(res, "card-output");
   });
-
-// submit listeners for form 'ZPL'
 document
   .getElementById("zpl-print")
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const zpl = validateZplForm();
     const res = await printLabel(zpl);
-    displayPrintNotification(res, "zpl-result");
+    await displayPrintNotification(res, "zpl-result");
   });
 document
   .getElementById("zpl-preview")
