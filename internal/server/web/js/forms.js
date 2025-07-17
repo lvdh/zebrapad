@@ -1,4 +1,4 @@
-// js/forms.js
+// static/js/forms.js
 
 // functions
 async function requestPreview(zpl) {
