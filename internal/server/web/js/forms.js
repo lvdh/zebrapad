@@ -1,36 +1,5 @@
 // js/forms.js
 
-// globals
-const zplTemplate = `^XA
-
-^FX-- BARCODE:^FS
-^FX--   NOTE: MUST BE 9 DIGITS (FIXED POSITION)^FS
-^FO78,10
-^BY3
-^BCN,70,,,,A
-^FD999999999^FS
-
-^FX-- FULL NAME:^FS
-^FX--   NOTE: MAX. 30 CHARS^FS
-^FO0,120
-^FB457,,,C,
-^A0,,30,
-^FDBill the Lizard\\&^FS
-
-^FX-- ASSUMED CONFIG:^FS
-^FX--   LABEL:       Zebra 800272-075^FS
-^FX--   PRINTER:     Zebra GK420t^FS
-^FX--   DENSITY:     8 DPMM^FS
-^FX-- LABEL:^FS
-^FX--   RESOLUTION:  457.2 DOTS x 152.4 DOTS^FS
-^FX-- BARCODE:^FS
-^FX--   WIDTH:       297 DOTS^FS
-^FX--     CALC:      (9x digit)*(11 dots/digit)*(BY=3)^FS
-^FX--   SIDES:       80 DOTS^FS
-^FX--     CALC:      ROUND((457.2-297)/2)^FS
-
-^XZ`;
-
 // functions
 async function requestPreview(zpl) {
   // NOTE: .replace() works around escape shenanigans coming from textarea
@@ -140,6 +109,35 @@ function validateZplForm() {
 }
 
 function renderZplTemplate(formData) {
+  const zplTemplate = `^XA
+  
+  ^FX-- BARCODE:^FS
+  ^FX--   NOTE: MUST BE 9 DIGITS (FIXED POSITION)^FS
+  ^FO78,10
+  ^BY3
+  ^BCN,70,,,,A
+  ^FD999999999^FS
+  
+  ^FX-- FULL NAME:^FS
+  ^FX--   NOTE: MAX. 30 CHARS^FS
+  ^FO0,120
+  ^FB457,,,C,
+  ^A0,,30,
+  ^FDBill the Lizard\\&^FS
+  
+  ^FX-- ASSUMED CONFIG:^FS
+  ^FX--   LABEL:       Zebra 800272-075^FS
+  ^FX--   PRINTER:     Zebra GK420t^FS
+  ^FX--   DENSITY:     8 DPMM^FS
+  ^FX-- LABEL:^FS
+  ^FX--   RESOLUTION:  457.2 DOTS x 152.4 DOTS^FS
+  ^FX-- BARCODE:^FS
+  ^FX--   WIDTH:       297 DOTS^FS
+  ^FX--     CALC:      (9x digit)*(11 dots/digit)*(BY=3)^FS
+  ^FX--   SIDES:       80 DOTS^FS
+  ^FX--     CALC:      ROUND((457.2-297)/2)^FS
+  
+  ^XZ`;
   return zplTemplate
     .replace("999999999", formData.cardBarcode)
     .replace("Bill the Lizard", formData.cardFullName);
