@@ -95,7 +95,7 @@ async function displayPrintNotification(res, resultElId) {
   const resultDiv = document.getElementById(resultElId);
   if (res.ok) {
     resultDiv.className = "notification is-success";
-    resultDiv.textContent = "Label sent to printer. 🖨️🤞";
+    resultDiv.textContent = "Label sent to printer. 🖨️";
   } else {
     const data = await res.json();
     resultDiv.className = "notification is-danger";
