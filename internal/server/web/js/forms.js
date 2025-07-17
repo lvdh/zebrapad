@@ -119,7 +119,16 @@ function validateCardForm(cardFullName, cardBarcode) {
     cardBarcodeMsg.textContent = msg;
     throw new Error(msg);
   }
-  return;
+}
+
+function validateZplForm(zpl) {
+  const zplInputMsg = document.getElementById("zpl-input-msg");
+  zplInputMsg.textContent = "";
+  if (!zpl.trim().startsWith("^XA") || !zpl.trim().endsWith("^XZ")) {
+    let msg = "Please provide valid ZPL. See documentation to the right.";
+    zplInputMsg.textContent = msg;
+    throw new Error(msg);
+  }
 }
 
 // submit listeners for form 'Card'
@@ -157,6 +166,7 @@ document
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const zpl = document.getElementById("zpl-input").value;
+    validateZplForm(zpl);
     const res = await printLabel(zpl);
     displayPrintNotification(res, "zpl-result");
   });
@@ -165,6 +175,7 @@ document
   .addEventListener("click", async function (e) {
     e.preventDefault();
     const zpl = document.getElementById("zpl-input").value;
+    validateZplForm(zpl);
     const res = await requestPreview(zpl);
     await displayPreviewNotification(res, "zpl-result");
     await displayPreview(res, "zpl-output");
