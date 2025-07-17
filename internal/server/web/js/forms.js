@@ -114,7 +114,7 @@ function validateCardForm(cardFullName, cardBarcode) {
     cardFullNameMsg.textContent = msg;
     throw new Error(msg);
   }
-  if (cardBarcode.length != 9) {
+  if (cardBarcode.length != 9 || !parseInt(cardBarcode)) {
     let msg = "Please provide a barcode value of exactly 9 digits.";
     cardBarcodeMsg.textContent = msg;
     throw new Error(msg);
