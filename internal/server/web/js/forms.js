@@ -104,6 +104,24 @@ async function displayPrintNotification(res, resultElId) {
   resultDiv.classList.remove("is-hidden");
 }
 
+function validateCardForm(cardFullName, cardBarcode) {
+  const cardFullNameMsg = document.getElementById("card-fullname-msg");
+  const cardBarcodeMsg = document.getElementById("card-barcode-msg");
+  cardFullNameMsg.textContent = "";
+  cardBarcodeMsg.textContent = "";
+  if (!cardFullName || cardFullName.length > 30) {
+    let msg = "Please provide a name, 30 characters or less.";
+    cardFullNameMsg.textContent = msg;
+    throw new Error(msg);
+  }
+  if (cardBarcode.length != 9) {
+    let msg = "Please provide a barcode value of exactly 9 digits.";
+    cardBarcodeMsg.textContent = msg;
+    throw new Error(msg);
+  }
+  return;
+}
+
 // submit listeners for form 'Card'
 document
   .getElementById("card-print")
@@ -111,6 +129,7 @@ document
     e.preventDefault();
     const cardBarcode = document.getElementById("card-barcode").value;
     const cardFullName = document.getElementById("card-fullname").value;
+    validateCardForm(cardFullName, cardBarcode);
     const zpl = zplTemplate
       .replace("999999999", cardBarcode)
       .replace("Bill the Lizard", cardFullName);
@@ -123,6 +142,7 @@ document
     e.preventDefault();
     const cardFullName = document.getElementById("card-fullname").value;
     const cardBarcode = document.getElementById("card-barcode").value;
+    validateCardForm(cardFullName, cardBarcode);
     const zpl = zplTemplate
       .replace("999999999", cardBarcode)
       .replace("Bill the Lizard", cardFullName);
