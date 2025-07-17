@@ -112,12 +112,12 @@ function validateCardForm() {
   cardFullNameMsg.textContent = "";
   cardBarcodeMsg.textContent = "";
   if (!cardFullName || cardFullName.length > 30) {
-    let msg = "Please provide a name, 30 characters or less.";
+    let msg = "ℹ️ Please provide a name, 30 characters or less.";
     cardFullNameMsg.textContent = msg;
     throw new Error(msg);
   }
   if (cardBarcode.length != 9 || !parseInt(cardBarcode)) {
-    let msg = "Please provide a barcode value of exactly 9 digits.";
+    let msg = "ℹ️ Please provide a barcode value of exactly 9 digits.";
     cardBarcodeMsg.textContent = msg;
     throw new Error(msg);
   }
@@ -132,7 +132,7 @@ function validateZplForm() {
   zplInputMsg = document.getElementById("zpl-input-msg");
   zplInputMsg.textContent = "";
   if (!zpl.trim().startsWith("^XA") || !zpl.trim().endsWith("^XZ")) {
-    let msg = "Please provide valid ZPL. See documentation to the right.";
+    let msg = "ℹ️ Please provide valid ZPL. See documentation to the right.";
     zplInputMsg.textContent = msg;
     throw new Error(msg);
   }
