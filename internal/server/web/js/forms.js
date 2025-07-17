@@ -5,7 +5,7 @@ const zplTemplate = `^XA
 
 ^FX-- BARCODE:^FS
 ^FX--   NOTE: MUST BE 9 DIGITS (FIXED POSITION)^FS
-^FO80,10
+^FO78,10
 ^BY3
 ^BCN,70,,,,A
 ^FD999999999^FS
@@ -15,7 +15,7 @@ const zplTemplate = `^XA
 ^FO0,120
 ^FB457,,,C,
 ^A0,,30,
-^FDBill the Lizard\&^FS
+^FDBill the Lizard\\&^FS
 
 ^FX-- ASSUMED CONFIG:^FS
 ^FX--   LABEL:       Zebra 800272-075^FS
@@ -33,18 +33,20 @@ const zplTemplate = `^XA
 
 // functions
 async function requestPreview(zpl) {
+  // NOTE: .replace() works around escape shenanigans coming from textarea
+  zplNormalized = JSON.stringify(zpl).replace("\\&", "\&");
+  console.log(zplNormalized);
   const res = await fetch(
     // NOTE: label type is fixed, Zebra 800272-075:
     //   size in metric: 57.15mm x 19.05mm
     //   size in freedom units: 2.25" x 0.75"
-    // NOTE: .replace() works around escape shenanigans
     "http://api.labelary.com/v1/printers/8dpmm/labels/2.25x0.75/0/",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify(zpl).replace("\\&", "\&"),
+      body: zplNormalized,
     },
   );
   return res;
@@ -107,10 +109,11 @@ document
   .getElementById("card-print")
   .addEventListener("click", async function (e) {
     e.preventDefault();
-    const cardFullName = document.getElementById("card-fullname").value;
     const cardBarcode = document.getElementById("card-barcode").value;
-    const zpl =
-      "^XA^FO50,50^ADN,36,20^FD" + cardFullName + cardBarcode + "^FS^XZ";
+    const cardFullName = document.getElementById("card-fullname").value;
+    const zpl = zplTemplate
+      .replace("999999999", cardBarcode)
+      .replace("Bill the Lizard", cardFullName);
     const res = await printLabel(zpl);
     await displayPrintNotification(res, "card-result");
   });
@@ -120,7 +123,9 @@ document
     e.preventDefault();
     const cardFullName = document.getElementById("card-fullname").value;
     const cardBarcode = document.getElementById("card-barcode").value;
-    const zpl = zplTemplate;
+    const zpl = zplTemplate
+      .replace("999999999", cardBarcode)
+      .replace("Bill the Lizard", cardFullName);
     const res = await requestPreview(zpl);
     await displayPreviewNotification(res, "card-result");
     await displayPreview(res, "card-output");
