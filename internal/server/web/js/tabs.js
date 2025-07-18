@@ -1,36 +1,63 @@
 // static/js/tabs.js
 
-const tabCard = document.getElementById("tab-card");
-const tabZpl = document.getElementById("tab-zpl");
-const refCard = document.getElementById("tab-card-ref");
-const refZpl = document.getElementById("tab-zpl-ref");
-const contentCard = document.getElementById("tab-content-card");
-const contentZpl = document.getElementById("tab-content-zpl");
+const cardTab = document.getElementById("tab-card");
+const cardRef = document.getElementById("tab-card-ref");
+const cardContent = document.getElementById("tab-content-card");
 
-// default tab
-tabCard.classList.add("is-active");
-tabZpl.classList.remove("is-active");
-refCard.classList.add("has-background-primary-light");
-refZpl.classList.remove("has-background-primary-light");
-contentCard.style.display = "";
-contentZpl.style.display = "none";
+const zplTab = document.getElementById("tab-zpl");
+const zplRef = document.getElementById("tab-zpl-ref");
+const zplContent = document.getElementById("tab-content-zpl");
 
-// listener for tab 'Card'
-tabCard.addEventListener("click", function () {
-  tabCard.classList.add("is-active");
-  tabZpl.classList.remove("is-active");
-  refCard.classList.add("has-background-primary-light");
-  refZpl.classList.remove("has-background-primary-light");
-  contentCard.style.display = "";
-  contentZpl.style.display = "none";
+const settingsTab = document.getElementById("tab-settings");
+const settingsRef = document.getElementById("tab-settings-ref");
+const settingsContent = document.getElementById("tab-content-settings");
+
+// set default tab
+cardTab.classList.add("is-active");
+zplTab.classList.remove("is-active");
+cardRef.classList.add("has-background-primary-light");
+zplRef.classList.remove("has-background-primary-light");
+cardContent.style.display = "";
+zplContent.style.display = "none";
+
+cardTab.addEventListener("click", function () {
+  cardTab.classList.add("is-active");
+  cardRef.classList.add("has-background-primary-light");
+  cardContent.style.display = "";
+
+  zplTab.classList.remove("is-active");
+  zplRef.classList.remove("has-background-primary-light");
+  zplContent.style.display = "none";
+
+  settingsTab.classList.remove("is-active");
+  settingsRef.classList.remove("has-background-primary-light");
+  settingsContent.style.display = "none";
 });
 
-// listener for tab 'ZPL'
-tabZpl.addEventListener("click", function () {
-  tabZpl.classList.add("is-active");
-  tabCard.classList.remove("is-active");
-  refZpl.classList.add("has-background-primary-light");
-  refCard.classList.remove("has-background-primary-light");
-  contentZpl.style.display = "";
-  contentCard.style.display = "none";
+zplTab.addEventListener("click", function () {
+  cardTab.classList.remove("is-active");
+  cardRef.classList.remove("has-background-primary-light");
+  cardContent.style.display = "none";
+
+  zplTab.classList.add("is-active");
+  zplRef.classList.add("has-background-primary-light");
+  zplContent.style.display = "";
+
+  settingsTab.classList.remove("is-active");
+  settingsRef.classList.remove("has-background-primary-light");
+  settingsContent.style.display = "none";
+});
+
+settingsTab.addEventListener("click", function () {
+  cardTab.classList.remove("is-active");
+  cardRef.classList.remove("has-background-primary-light");
+  cardContent.style.display = "none";
+
+  zplTab.classList.remove("is-active");
+  zplRef.classList.remove("has-background-primary-light");
+  zplContent.style.display = "none";
+
+  settingsTab.classList.add("is-active");
+  settingsRef.classList.add("has-background-primary-light");
+  settingsContent.style.display = "";
 });
