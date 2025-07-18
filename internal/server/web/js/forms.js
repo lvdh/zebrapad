@@ -82,13 +82,13 @@ function validateCardForm() {
   cardFullNameMsg.textContent = "";
   cardBarcodeMsg.textContent = "";
   // full name must be filled out and <=30 chars
-  if (!cardFullName || cardFullName.length > 30) {
+  if (cardFullName.length > 30 || !cardFullName) {
     let msg = "ℹ️ Please provide a name, 30 characters or less.";
     cardFullNameMsg.textContent = msg;
     throw new Error(msg);
   }
   // barcode must be filled out and exactly 9 digits
-  if (!cardBarcode || cardBarcode.length != 9 || !parseInt(cardBarcode)) {
+  if (cardBarcode.length != 9 || !parseInt(cardBarcode)) {
     let msg = "ℹ️ Please provide a barcode value of exactly 9 digits.";
     cardBarcodeMsg.textContent = msg;
     throw new Error(msg);
