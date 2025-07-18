@@ -39,9 +39,10 @@ async function requestPreview(zpl) {
   zplNormalized = JSON.stringify(zpl).replace("\\&", "\&");
   console.log(zplNormalized);
   const res = await fetch(
-    // NOTE: label type is fixed, Zebra 800272-075:
-    //   size in metric: 57.15mm x 19.05mm
-    //   size in freedom units: 2.25" x 0.75"
+    // NOTE: label type is fixed:
+    //   label part number:      Zebra 800272-075
+    //   size in metric:         57.15mm x 19.05mm
+    //   size in freedom units:  2.25" x 0.75"
     "http://api.labelary.com/v1/printers/8dpmm/labels/2.25x0.75/0/",
     {
       method: "POST",
