@@ -112,6 +112,8 @@ function validateZplForm() {
 }
 
 function renderZplTemplate(formData) {
+  // NOTE: The 'full name' value must end with `\&` (CRLF) in order to
+  //       center properly. In javascript source, it must be escaped: `\\&`.
   const zplTemplate = `^XA
   
   ^FX-- BARCODE:^FS
