@@ -7,6 +7,30 @@
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body class="has-background-primary-light">
+  <!-- printer selection -->
+  <div class="section py-3">
+    <div class="container">
+      <div class="field is-grouped">
+        <div class="control is-expanded">
+          <label class="label">Select Printer</label>
+          <div class="select is-fullwidth">
+            <select id="printer-select">
+              <option value=":9010">Manual TCP (:9010)</option>
+            </select>
+          </div>
+        </div>
+        <div class="control">
+          <label class="label">&nbsp;</label>
+          <button class="button is-info" id="refresh-printers">
+            <span class="icon">
+              <i class="has-text-white">🔄</i>
+            </span>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- tab bar -->
   <div class="tabs is-boxed is-centered has-background-white-bis">
     <ul>
@@ -148,4 +172,5 @@
 </body>
 <script type="text/javascript" src="/assets/js/tabs.js"></script>
 <script type="text/javascript" src="/assets/js/forms.js"></script>
+<script type="text/javascript" src="/assets/js/printers.js"></script>
 </html>

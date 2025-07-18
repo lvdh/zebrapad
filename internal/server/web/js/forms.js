@@ -86,10 +86,20 @@ async function displayPreviewNotification(res, resultElId) {
 }
 
 async function printLabel(zpl) {
+  // Get selected printer URI
+  const printerSelect = document.getElementById("printer-select");
+  const selectedPrinter = printerSelect.value;
+  
+  // For now, we still use the original /print endpoint
+  // In a full implementation, you might want to modify the backend
+  // to accept printer selection in the request
   const res = await fetch("/print", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ zpl }),
+    body: JSON.stringify({ 
+      zpl: zpl,
+      printer: selectedPrinter // Include selected printer for future use
+    }),
   });
   return res;
 }
