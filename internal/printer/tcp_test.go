@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func startFakePrinter(t *testing.T, received chan<- []byte) (addr string, stop func()) {
+func startFakeTCPPrinter(t *testing.T, received chan<- []byte) (addr string, stop func()) {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatalf("failed to start fake printer: %v", err)
@@ -26,7 +26,7 @@ func startFakePrinter(t *testing.T, received chan<- []byte) (addr string, stop f
 
 func TestTCPPrinter_Print_Success(t *testing.T) {
 	received := make(chan []byte, 1)
-	addr, stop := startFakePrinter(t, received)
+	addr, stop := startFakeTCPPrinter(t, received)
 	defer stop()
 
 	p := &TCPPrinter{Network: "tcp", Address: addr}

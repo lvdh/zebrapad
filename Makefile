@@ -13,11 +13,13 @@ test: go.mod
 	go test -v ./...
 
 $(BIN): build
-build: go.mod cmd/zebrapad/*.go internal/*
+build: go.mod cmd/zebrapad/*.go internal/* clean
 	go build -o ./$(BIN) ./cmd/zebrapad/*.go
+	du -sh ./$(BIN)
 
 version: $(BIN)
 	go version -m ./$(BIN)
 
 run: go.mod cmd/zebrapad/*.go internal/*
+	(sleep 1 && xdg-open "http://localhost:8080/") &
 	go run ./...

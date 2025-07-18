@@ -1,98 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-background-primary-light">
 <head>
-    <meta charset="UTF-8">
-    <title>ZebraPad</title>
-    <link rel="stylesheet" href="/static/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8">
+  <title>zebrapad</title>
+  <link rel="stylesheet" href="/assets/css/bulma.min.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
-    <div class="tabs is-boxed is-centered">
-        <ul>
-            <li class="is-active" id="tab-card"><a>Card</a></li>
-            <li id="tab-zpl"><a>ZPL</a></li>
-        </ul>
-    </div>
-    <!-- 'Card' tab -->
-    <div id="tab-content-card">
-        <section class="section">
-            <h1 class="title">ZebraPad</h1>
-            <h2 class="subtitle">Library Card</h2>
-            <div class="container">
-                <div class="columns">
-                    <div class="column">
-                        <form id="card-form">
-                            <div class="field">
-                                <label class="label">Full Name</label>
-                                <div class="control">
-                                    <input class="input" type="text" id="card-fullname" name="fullname" placeholder="Full Name">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label class="label">Barcode</label>
-                                <div class="control">
-                                    <input class="input" type="text" id="card-barcode" name="barcode" placeholder="Barcode">
-                                </div>
-                            </div>
-                            <div class="field m-4">
-                                <div class="control">
-                                    <div class="buttons">
-                                        <button class="button is-primary" type="submit" id="card-print">
-                                            Print
-                                        </button>
-                                        <button class="button is-link" type="submit" id="card-render">
-                                            Render
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div id="card-result" class="notification is-hidden"></div>
+<body class="has-background-primary-light">
+  <!-- tab bar -->
+  <div class="tabs is-boxed is-centered has-background-white-bis">
+    <ul>
+      <li class="is-active" id="tab-card">
+        <a id="tab-card-ref" class="has-background-primary-light">
+          Library Card
+        </a>
+        </li>
+      <li id="tab-zpl">
+        <a id="tab-zpl-ref">
+          ZPL Input
+        </a>
+      </li>
+    </ul>
+  </div>
+  <!-- tab 'Card' -->
+  <div id="tab-content-card">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">zebrapad</h1>
+        <h2 class="subtitle">Library Card</h2>
+        <div class="columns">
+            <div class="column">
+                <form id="card-form">
+                    <div class="field">
+                        <label class="label">Full Name</label>
+                        <div class="control">
+                            <input class="input" type="text" id="card-fullname" name="fullname" placeholder="Full Name">
+                        </div>
+                        <p class="is-italic" id="card-fullname-msg"></p>
                     </div>
-                    <div class="column">
-                        <div id="card-output" class="box is-hidden" style="margin-top: 1em;"></div>
+                    <div class="field">
+                        <label class="label">Barcode</label>
+                        <div class="control">
+                            <input class="input" type="text" id="card-barcode" name="barcode" placeholder="Barcode">
+                        </div>
+                        <p class="is-italic" id="card-barcode-msg"></p>
                     </div>
-                </div>
+                    <div class="field m-4">
+                        <div class="control">
+                            <div class="buttons">
+                                <button class="button is-primary" type="submit" id="card-print">
+                                    Print
+                                </button>
+                                <button class="button is-link" type="submit" id="card-preview">
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div id="card-result" class="notification is-hidden"></div>
             </div>
-        </section>
-    </div>
-    <!-- 'ZPL' tab -->
-    <div id="tab-content-zpl" style="display:none;">
-        <section class="section">
-            <h1 class="title">ZebraPad</h1>
-            <h2 class="subtitle">ZPL input</h2>
-            <div class="container">
-                <div class="columns">
-                    <div class="column">
-                        <form id="zpl-form">
-                            <div class="field">
-                                <div class="control">
-                                    <textarea class="textarea" id="zpl-input" rows="10">^XA^FO50,50^ADN,36,20^FDTest Label^FS^XZ</textarea>
-                                </div>
-                            </div>
-                            <div class="field m-4">
-                                <div class="control">
-                                    <div class="buttons">
-                                        <button class="button is-primary" type="submit" id="zpl-print">
-                                            Print
-                                        </button>
-                                        <button class="button is-link" type="submit" id="zpl-render">
-                                            Render
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div id="zpl-result" class="notification is-hidden"></div>
-                    </div>
-                    <div class="column">
-                        <div id="zpl-output" class="box is-hidden" style="margin-top: 1em;"></div>
-                    </div>
-                </div>
+            <div class="column">
+                <div id="card-output" class="box is-hidden has-background-warning-light" style="margin-top: 1em; width: 500px;"></div>
             </div>
-        </section>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- tab 'ZPL' -->
+  <div id="tab-content-zpl" style="display:none;">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">zebrapad</h1>
+        <h2 class="subtitle">ZPL Input</h2>
+        <div class="columns">
+          <div class="column">
+            <form id="zpl-form">
+              <div class="field">
+                <div class="control">
+                  <textarea class="textarea" id="zpl-input" rows="10"></textarea>
+                </div>
+                <p class="is-italic" id="zpl-input-msg"></p>
+              </div>
+              <div class="field m-4">
+                <div class="control">
+                  <div class="buttons">
+                    <button class="button is-primary" type="submit" id="zpl-print">
+                      Print
+                    </button>
+                    <button class="button is-link" type="submit" id="zpl-preview">
+                      Preview
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div id="zpl-result" class="notification is-hidden"></div>
+          </div>
+          <div class="column">
+            <div id="zpl-output" class="box is-hidden has-background-warning-light" style="margin-top: 1em; width: 500px;"></div>
+            <div class="content">
+              <h3>Documentation</h3>
+              <ul>
+                <li>
+                  <a href="https://labelary.com/viewer.html">
+                    Label Viewer
+                  </a> (labelary.com)
+                </li>
+                <li>
+                  <a href="https://labelary.com/zpl.html">
+                    An Introduction to ZPL
+                  </a> (labelary.com)
+                </li>
+                <li>
+                  <a href="https://labelary.com/docs.html">
+                    Labelary Engine Documentation
+                  </a> (labelary.com)
+                </li>
+                <li>
+                  <a href="https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/zplii-pm-vol1.pdf">
+                    ZPL II Programming Guide Volume One
+                  </a> (zebra.com)
+                </li>
+                <li>
+                  <a href="https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/zplii-pm-vol2-en.pdf">
+                    ZPL II Programming Guide Volume Two
+                  </a> (zebra.com)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <footer>
+    <div class="content has-text-centered">
+      <p>
+        <strong><a href="https://github.com/lvdh/zebrapad">zebrapad</a></strong>
+        | <a href="https://github.com/lvdh/zebrapad/blob/main/CONTRIBUTING.md">contribute</a>
+        | <a href="https://github.com/lvdh/zebrapad/issues/new">feedback</a>
+        | <a href="https://github.com/lvdh/zebrapad/blob/main/LICENSE.md">license</a>
+        <br />previews by <a href="https://labelary.com/">labelary.com</a>
+      </p>
     </div>
-    <script type="text/javascript" src="/static/js/tabs.js"></script>
-    <script type="text/javascript" src="/static/js/forms.js"></script>
+  </footer>
 </body>
+<script type="text/javascript" src="/assets/js/tabs.js"></script>
+<script type="text/javascript" src="/assets/js/forms.js"></script>
 </html>

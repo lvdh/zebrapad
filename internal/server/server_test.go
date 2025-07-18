@@ -2,74 +2,91 @@ package server
 
 import (
 	"bytes"
-	"errors"
+	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/gin-gonic/gin"
-	"github.com/lvdh/zebrapad/internal/printer"
 )
 
 type mockPrinter struct {
-	received []byte
-	err      error
+	Printed []byte
+	Err     error
 }
 
 func (m *mockPrinter) Print(data []byte) error {
-	m.received = data
-	return m.err
+	m.Printed = data
+	return m.Err
 }
 
-func setupRouter(p printer.Printer) *gin.Engine {
-	gin.SetMode(gin.TestMode)
-	return NewHTTPServer(p)
+func TestIndexRoute(t *testing.T) {
+	srv := NewHTTPServer(&mockPrinter{})
+	req := httptest.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	srv.ServeHTTP(w, req)
+	resp := w.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d", resp.StatusCode)
+	}
+	body, _ := io.ReadAll(resp.Body)
+	if len(body) == 0 {
+		t.Error("expected non-empty body for /")
+	}
 }
 
-func TestPrintEndpoint_Success(t *testing.T) {
+func TestAssetsRoute_NotFound(t *testing.T) {
+	srv := NewHTTPServer(&mockPrinter{})
+	req := httptest.NewRequest("GET", "/assets/doesnotexist.js", nil)
+	w := httptest.NewRecorder()
+	srv.ServeHTTP(w, req)
+	resp := w.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("expected 404 Not Found, got %d", resp.StatusCode)
+	}
+}
+
+func TestPrintRoute_Success(t *testing.T) {
 	mp := &mockPrinter{}
-	router := setupRouter(mp)
-
-	body := `{"zpl":"^XA^FO50,50^ADN,36,20^FDHello^FS^XZ"}`
-	req, _ := http.NewRequest("POST", "/print", bytes.NewBufferString(body))
+	srv := NewHTTPServer(mp)
+	payload := map[string]string{"zpl": "^XA^FO50,50^FDTest^FS^XZ"}
+	b, _ := json.Marshal(payload)
+	req := httptest.NewRequest("POST", "/print", bytes.NewReader(b))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected 200, got %d", w.Code)
+	srv.ServeHTTP(w, req)
+	resp := w.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d", resp.StatusCode)
 	}
-	if string(mp.received) != "^XA^FO50,50^ADN,36,20^FDHello^FS^XZ" {
-		t.Errorf("printer received wrong data: %q", mp.received)
-	}
-}
-
-func TestPrintEndpoint_BadRequest(t *testing.T) {
-	mp := &mockPrinter{}
-	router := setupRouter(mp)
-
-	body := `{}`
-	req, _ := http.NewRequest("POST", "/print", bytes.NewBufferString(body))
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-
-	if w.Code != http.StatusBadRequest {
-		t.Fatalf("expected 400, got %d", w.Code)
+	if string(mp.Printed) != payload["zpl"] {
+		t.Errorf("expected printer to receive %q, got %q", payload["zpl"], string(mp.Printed))
 	}
 }
 
-func TestPrintEndpoint_PrinterError(t *testing.T) {
-	mp := &mockPrinter{err: errors.New("printer unavailable")}
-	router := setupRouter(mp)
-
-	body := `{"zpl":"test"}`
-	req, _ := http.NewRequest("POST", "/print", bytes.NewBufferString(body))
+func TestPrintRoute_BadRequest(t *testing.T) {
+	srv := NewHTTPServer(&mockPrinter{})
+	req := httptest.NewRequest("POST", "/print", bytes.NewReader([]byte(`{}`)))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
+	srv.ServeHTTP(w, req)
+	resp := w.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("expected 400 Bad Request, got %d", resp.StatusCode)
+	}
+}
 
-	if w.Code != http.StatusInternalServerError {
-		t.Fatalf("expected 500, got %d", w.Code)
+func TestPrintRoute_MethodNotAllowed(t *testing.T) {
+	srv := NewHTTPServer(&mockPrinter{})
+	req := httptest.NewRequest("GET", "/print", nil)
+	w := httptest.NewRecorder()
+	srv.ServeHTTP(w, req)
+	resp := w.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405 Method Not Allowed, got %d", resp.StatusCode)
 	}
 }

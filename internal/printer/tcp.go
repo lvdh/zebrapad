@@ -1,0 +1,32 @@
+package printer
+
+import (
+	"fmt"
+	"net"
+)
+
+type TCPPrinter struct {
+	Network string
+	Address string // "[host]:port"
+}
+
+func NewTCPPrinter(address string) *TCPPrinter {
+	p := &TCPPrinter{
+		Network: "tcp",
+		Address: address,
+	}
+	return p
+}
+
+func (t *TCPPrinter) Print(data []byte) error {
+	conn, err := net.Dial(t.Network, t.Address)
+	if err != nil {
+		return fmt.Errorf("failed to connect to printer: %w", err)
+	}
+	defer conn.Close()
+	_, err = conn.Write(data)
+	if err != nil {
+		return fmt.Errorf("failed to print: %w", err)
+	}
+	return nil
+}
