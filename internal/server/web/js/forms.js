@@ -78,14 +78,17 @@ function validateCardForm() {
   const cardFullName = document.getElementById("card-fullname").value;
   const cardFullNameMsg = document.getElementById("card-fullname-msg");
   const cardBarcodeMsg = document.getElementById("card-barcode-msg");
+  // clear previous error messages
   cardFullNameMsg.textContent = "";
   cardBarcodeMsg.textContent = "";
+  // full name must be filled out and <=30 chars
   if (!cardFullName || cardFullName.length > 30) {
     let msg = "ℹ️ Please provide a name, 30 characters or less.";
     cardFullNameMsg.textContent = msg;
     throw new Error(msg);
   }
-  if (cardBarcode.length != 9 || !parseInt(cardBarcode)) {
+  // barcode must be filled out and exactly 9 digits
+  if (!cardBarcode || cardBarcode.length != 9 || !parseInt(cardBarcode)) {
     let msg = "ℹ️ Please provide a barcode value of exactly 9 digits.";
     cardBarcodeMsg.textContent = msg;
     throw new Error(msg);
