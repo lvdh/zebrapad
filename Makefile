@@ -4,7 +4,7 @@ BIN=zebrapad
 all: clean test build version run
 
 clean:
-	rm -rf ./$(BIN)
+	rm -rf ./bin/
 
 go.mod:
 	go mod init github.com/lvdh/zebrapad
@@ -14,11 +14,12 @@ test: go.mod
 
 $(BIN): build
 build: go.mod cmd/zebrapad/*.go internal/* clean
-	go build -o ./$(BIN) ./cmd/zebrapad/*.go
-	du -sh ./$(BIN)
+	go build -o ./bin/$(BIN) ./cmd/zebrapad/*.go
+	GOOS=windows GOARCH=amd64 go build -o bin/$(BIN).exe ./cmd/zebrapad/*.go
+	du -sh ./bin/*
 
-version: $(BIN)
-	go version -m ./$(BIN)
+version: ./bin/
+	go version -m ./bin/*
 
 run: go.mod cmd/zebrapad/*.go internal/*
 	@(sleep 1 && xdg-open "http://localhost:8080/" 2>/dev/null) &
