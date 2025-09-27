@@ -21,5 +21,6 @@ version: $(BIN)
 	go version -m ./$(BIN)
 
 run: go.mod cmd/zebrapad/*.go internal/*
-	(sleep 1 && xdg-open "http://localhost:8080/") &
+	@(sleep 1 && xdg-open "http://localhost:8080/" 2>/dev/null) &
+	@(sleep 1 && echo ">> http://localhost:8080/") &
 	go run ./...
