@@ -13,7 +13,10 @@ type TCPPrinter struct {
 func NewTCPPrinter(address string) *TCPPrinter {
 	p := &TCPPrinter{
 		Network: "tcp",
-		Address: address,
+		Address: ":9100",
+	}
+	if address != "" {
+		p.Address = address
 	}
 	return p
 }

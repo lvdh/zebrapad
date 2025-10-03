@@ -72,5 +72,4 @@ func NewHTTPServer(p printer.Printer) http.Handler {
 	mux.HandleFunc("/api/printers", handlePrintersAPI)
 
 	return mux
-	// http.ListenAndServe(":8080", mux)
 }
